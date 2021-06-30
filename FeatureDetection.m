@@ -4,15 +4,21 @@ close all;  % Close all figure windows except those created by imtool.
 imtool close all;  % Close all figure windows created by imtool.
 workspace;  % Make sure the workspace panel is showing.
 
+
+%-------------using segmentation to optimize ROI---------------------------
 I = imread('DSC_0280.jpg');
 hsv = rgb2hsv(I);
 hue = 360*hsv(:,:,1);
 binaryMask = (hue > 60 & hue <130);
 figure; imshow(binaryMask);
 
+
 ImGray = im2double(rgb2gray(I));
 ImGray = ImGray.*binaryMask;
 figure; imshow(ImGray);
+
+
+%--------------feature detection-------------------------------------------
 FASTcorners = detectFASTFeatures(ImGray);
 SURFcorners = detectSURFFeatures(ImGray,'ROI',[1166,1000,3000,1300]);
 HARRIScorners = detectHarrisFeatures(ImGray);
@@ -22,6 +28,9 @@ plot(SURFcorners);
 
 [features, validPoints] = extractFeatures(ImGray, SURFcorners);
 location = SURFcorners.Location;
+
+%------splitting the points into top and bottom points and interpolate-----
+
 x = location(:,1);
 y = location(:,2);
 [max, max_index] = max(x);
@@ -55,7 +64,7 @@ curve = fit(xTop,yTop,'linearinterp',option);
 figure, imshow(I); hold on;
 plot(curve);
 
-%image windowing around interesting points and img histogram
+%--------image windowing around interesting points and img histogram-------
 windowSize = 200;
 windowTop = I((topLocation(2)-windowSize):(topLocation(2)+windowSize),(topLocation(1)-windowSize):(topLocation(1)+ windowSize),:);
 figure, imshow(windowTop);
@@ -83,3 +92,6 @@ subplot(2,2,1), surf(hue);
 subplot(2,2,2), surf(saturation);
 subplot(2,2,3), surf(value);
 
+%---------------print out the location matrix to work with scipy----------- 
+writematrix(location);
+type 'location.txt';
