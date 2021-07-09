@@ -6,6 +6,7 @@ workspace;  % Make sure the workspace panel is showing.
 
 
 %-------------using segmentation to optimize ROI---------------------------
+
 I = imread('DSC_0280.jpg');
 hsv = rgb2hsv(I);
 hue = 360*hsv(:,:,1);
@@ -95,3 +96,16 @@ subplot(2,2,3), surf(value);
 %---------------print out the location matrix to work with scipy----------- 
 writematrix(location);
 type 'location.txt';
+
+
+%---------------k-means clustering-----------------------------------------
+[index, clusterCentroid] = kmeans(location,9);
+
+figure, imshow(I);
+hold on;
+gscatter(location(:,1),location(:,2),index, 'rgbwkymcr');
+hold on;
+plot(clusterCentroid(:,1), clusterCentroid(:,2), 'kx');
+legend('Cluster 1','Cluster 2','Cluster 3','Cluster 4','Cluster 5','Cluster 6','Cluster 7','Cluster 8','Cluster 9','Cluster Centroid')
+writematrix(clusterCentroid);
+type 'clusterCentroid.txt';
