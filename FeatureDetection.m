@@ -7,10 +7,13 @@ workspace;  % Make sure the workspace panel is showing.
 
 %-------------using segmentation to optimize ROI---------------------------
 
-I = imread('DSC_0280.jpg');
+I = imread('Pflanze 2.jpg');
 hsv = rgb2hsv(I);
 hue = 360*hsv(:,:,1);
-binaryMask = (hue > 60 & hue <130);
+binaryMask = (hue > 70 & hue <85);
+binaryMask = imclearborder(binaryMask,4);% clear border
+binaryMask = bwareaopen(binaryMask,30000); %remove blobs
+binaryMask = imfill(binaryMask,'holes');
 figure; imshow(binaryMask);
 
 
@@ -24,7 +27,7 @@ FASTcorners = detectFASTFeatures(ImGray);
 SURFcorners = detectSURFFeatures(ImGray,'ROI',[1166,1000,3000,1300]);
 HARRIScorners = detectHarrisFeatures(ImGray);
 BRISKcorners = detectBRISKFeatures(ImGray);
-imshow(I); hold on;
+figure, imshow(I); hold on;
 plot(SURFcorners);
 
 [features, validPoints] = extractFeatures(ImGray, SURFcorners);

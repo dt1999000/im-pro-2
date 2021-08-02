@@ -1,0 +1,6 @@
+I = imread('Pflanze 3.jpg');
+imshow(I);
+[x,y] = ginput(15);
+A = cat(2,x,y);
+writematrix(A);
+type 'interactive Pflanze 3 pictures.txt';
