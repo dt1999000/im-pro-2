@@ -7,12 +7,14 @@ workspace;  % Make sure the workspace panel is showing.
 
 %-------------using segmentation to optimize ROI---------------------------
 
-I = imread('Pflanze 2.jpg');
+I = imread('Pflanze 3.jpg');
 hsv = rgb2hsv(I);
+value = hsv(:,:,3);
+saturation = hsv(:,:,2);
 hue = 360*hsv(:,:,1);
-binaryMask = (hue > 70 & hue <85);
+binaryMask = (hue > 64 & hue <80 & saturation >0.1);
+binaryMask = bwareaopen(binaryMask,100000); %remove blobs
 binaryMask = imclearborder(binaryMask,4);% clear border
-binaryMask = bwareaopen(binaryMask,30000); %remove blobs
 binaryMask = imfill(binaryMask,'holes');
 figure; imshow(binaryMask);
 
@@ -63,11 +65,6 @@ yTop = rightPointsLocation(:,2);
 figure, imshow(I); hold on;
 plot(topLocation(1), topLocation(2),'r*');
 
-option = fitoptions('Method','NearestInterpolant');
-curve = fit(xTop,yTop,'linearinterp',option);
-figure, imshow(I); hold on;
-plot(curve);
-
 %--------image windowing around interesting points and img histogram-------
 windowSize = 200;
 windowTop = I((topLocation(2)-windowSize):(topLocation(2)+windowSize),(topLocation(1)-windowSize):(topLocation(1)+ windowSize),:);
@@ -96,17 +93,26 @@ subplot(2,2,1), surf(hue);
 subplot(2,2,2), surf(saturation);
 subplot(2,2,3), surf(value);
 
+%---------------get object contour pixel location--------------------------
+contour = cell2mat(bwboundaries(binaryMask, 'noholes'));
+temp = contour(:,1);
+contour(:,1) = contour(:,2);
+contour(:,2) = temp;
+writematrix(contour);
+type 'contour.txt';
+
 %---------------print out the location matrix to work with scipy----------- 
+
 writematrix(location);
 type 'location.txt';
 
 
 %---------------k-means clustering-----------------------------------------
-[index, clusterCentroid] = kmeans(location,9);
+[index, clusterCentroid] = kmeans(contour,6);
 
 figure, imshow(I);
 hold on;
-gscatter(location(:,1),location(:,2),index, 'rgbwkymcr');
+gscatter(contour(:,1),contour(:,2),index, 'rgbkymcr'); %rgbwkymcr
 hold on;
 plot(clusterCentroid(:,1), clusterCentroid(:,2), 'kx');
 legend('Cluster 1','Cluster 2','Cluster 3','Cluster 4','Cluster 5','Cluster 6','Cluster 7','Cluster 8','Cluster 9','Cluster Centroid')

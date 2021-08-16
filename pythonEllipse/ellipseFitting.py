@@ -16,13 +16,14 @@ import cv2
 
 
 #---------------------load the data from matlab environment/textfile-----------
-with open('A.txt', 'r') as f:
+with open('contour.txt', 'r') as f:
     dataset = np.array([[float(num) for num in line.split(',')] for line in f])
+
 print(dataset)
 #dataset = dataset/3.19
 #---------------------load picture---------------------------------------------
 folder = os.getcwd()
-imgName = r'Pflanze 3.jpg'
+imgName = r'DSC_0071.jpg'
 img_path = os.path.join(folder, imgName)
  
 img = cv2.imread(img_path)
@@ -35,24 +36,25 @@ center, width, height, phi = ellipse.as_parameters()
 
 center = np.array(center)
 center = center.astype(int)
-
+print(center)
 
 axes = np.array([width,height])
 axes = axes.astype(int)
-
+print(axes)
 
 phi = np.array(phi)
 phi = int(phi)
-
+print(phi)
 
 startAngle = 0
 endAngle = 360
 color = (250,0,0)
 thickness = 4
+dataset = dataset.astype(int)
 #---------------------draw ellipse based on fitting result---------------------
+for i in range(dataset.shape[0]):
+    centerCircle = dataset[i,:]
+    cv2.circle(img, centerCircle , 5 ,(0,0,255),-1)
 
-cv2.ellipse(img, center, axes, phi, startAngle, endAngle, color, thickness)
-cv2.imshow("Model Image", img)
-cv2.waitKey(0)   
-cv2.destroyAllWindows()
-cv2.imwrite('manualEllipseFitPflanze3.png', img);
+cv2.ellipse(img, center , axes, phi, startAngle, endAngle, color, thickness)
+cv2.imwrite('manualEllipseFit71.png', img);

@@ -5,7 +5,7 @@ close all;  % Close all figure windows except those created by imtool.
 imtool close all;  % Close all figure windows created by imtool.
 workspace;  % Make sure the workspace panel is showing.
 
-img= imread('Pflanze 3.jpg'); 
+img= imread('DSC_0070.jpg'); 
 
 
 
@@ -85,5 +85,5 @@ scale = 1; %when set to 1, the number of pixel will be calculate
 %segmentation with hue value thresholding in color space
 
 
-areaCircle = calAreaSeg(img,140,155,0.2,10000)* scale %when scale is set to 1 the number of pixel will be calculated
+areaCircle = calAreaSeg(img,150,190,0.2,10000)* scale %when scale is set to 1 the number of pixel will be calculated
 areaPflanze = calAreaSeg(img, 50,85, 0.1, 400000) * 50.25/ areaCircle
