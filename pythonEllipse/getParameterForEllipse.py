@@ -39,7 +39,7 @@ def fit(dataset):
     
     
     phi = np.array(phi)
-    phi = int(phi)
+    phi = int(phi*360)
     
     
     
@@ -52,8 +52,8 @@ axes = np.array([np.zeros(numberofleaves),np.zeros(numberofleaves)])
 
 phi = np.array(np.zeros(numberofleaves))
 for i in range(numberofleaves):
-    #with open('Pflanze4Nummer'+str(i+1) + '.txt', 'r') as f:
-    with open('contour.txt','r') as f:
+    with open('Pflanze4Nummer'+str(i+1) + '.txt', 'r') as f:
+   
         dataset = np.array([[float(num) for num in line.split(',')] for line in f])
         [center[:,i],axes[:,i],phi[i]] = fit(dataset)
         print(center)

@@ -42,7 +42,7 @@ axes = np.array([width,height])
 axes = axes.astype(int)
 print(axes)
 
-phi = np.array(phi)
+phi = np.array(phi*360)
 phi = int(phi)
 print(phi)
 
